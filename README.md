@@ -1,50 +1,80 @@
-# Welcome to your Expo app 👋
+# Expo Circular Slider (Expo Router)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an **Expo** + **React Native** project (using **Expo Router**) that renders a circular/zooming image slider component.
+
+
+https://github.com/user-attachments/assets/f2d8cf01-4a84-480e-8d04-1568942e7703
+
+
+## What you’re seeing
+- `app/index.tsx` renders the page content.
+- `app/CircularSlider.tsx` exports the `CircularSlider` component.
+  - It uses a horizontal `Animated.FlatList` with `snapToInterval` to move between items.
+  - `react-native-reanimated` drives animations:
+    - the active item gets a highlighted border (via `interpolateColor`)
+    - items translate slightly on the Y axis
+  - The background image swaps based on the currently active index.
+
+## Prerequisites
+- **Node.js** installed (includes `npm`)
+- (Recommended) Android Studio / iOS simulator if you want platform builds
 
 ## Get started
+### 1) Install dependencies
+From the project folder:
 
-1. Install dependencies
+```bash
+cd my-app
+npm install
+```
 
-   ```bash
-   npm install
-   ```
+### 2) Start the development server
+```bash
+npx expo start
+```
 
-2. Start the app
+Then use one of the options shown in the terminal:
+- **Expo Go** (fastest): scan the QR code with the Expo Go app
+- **Android**: press the Android option
+- **iOS**: press the iOS option (macOS required)
+- **Web**: press the web option
 
-   ```bash
-   npx expo start
-   ```
+## Helpful scripts
+From `my-app/`:
 
-In the output, you'll find options to open the app in a
+- Start:
+  ```bash
+  npm run start
+  ```
+- Android:
+  ```bash
+  npm run android
+  ```
+- iOS:
+  ```bash
+  npm run ios
+  ```
+- Web:
+  ```bash
+  npm run web
+  ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Project structure (relevant files)
+- `app/_layout.tsx`
+  - Expo Router setup (routes + `headerShown: false`).
+- `app/index.tsx`
+  - Page entry that renders `<CircularSlider />`.
+- `app/CircularSlider.tsx`
+  - The circular slider implementation.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Reset project (if needed)
+This project includes a helper script:
 
 ```bash
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Notes
+- The slider uses remote placeholder images from `picsum.photos`.
+- If you change the images, update the `images` array inside `app/CircularSlider.tsx`.
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
