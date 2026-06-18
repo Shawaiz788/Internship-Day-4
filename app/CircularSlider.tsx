@@ -1,7 +1,11 @@
-import React from "react";
-import { View,Text, Dimensions,Image,FlatList } from "react-native";
+import React, { useState } from "react";
+import { View,Text, Dimensions,Image,FlatList,StyleSheet } from "react-native";
 import Animated, {
+    clamp,
+    FadeIn,
     interpolate,
+    interpolateColor,
+    runOnJS,
     SharedValue,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -35,6 +39,11 @@ function CarouselItem({
 
     const stylez=useAnimatedStyle(()=>{
         return{
+            borderWidth:4,
+            borderRadius:_itemSize/2,
+            borderColor:interpolateColor(scrollX.value,
+                    [index-1,index,index+1],
+                    ["transparent","white","transparent"]),
             transform:[{
                 translateY:interpolate(scrollX.value,
                     [index-1,index,index+1],
@@ -42,25 +51,43 @@ function CarouselItem({
             }]
         }
     });
-    return (<Animated.View  style={[stylez]}>
+    return (<Animated.View  style={[{
+        width:_itemSize,
+        height:_itemSize}
+        ,stylez]}>
                 <Image 
                 source={{uri:imageUri}} 
-                style={{width:_itemSize,height:_itemSize,borderRadius:_itemSize/2}}/>
+                style={{flex:1,borderRadius:_itemSize/2}}/>
             </Animated.View>
     )
 }
 
 export function CircularSlider() {
     const scrollX=useSharedValue(0);
+    const [activeIndex,setActiveIndex]=useState(0);
     //custom onScroll to track x position of the scroll and update scrollX value accordingly
     const onScroll=useAnimatedScrollHandler(e=>{
-        scrollX.value=e.contentOffset.x/_itemTotalSize
+        scrollX.value=clamp(e.contentOffset.x/_itemTotalSize,0,images.length-1);
+        const newActiveIndex=Math.round(scrollX.value);
+        if(activeIndex!==newActiveIndex){
+            runOnJS (setActiveIndex)(newActiveIndex);
+        }
     });
   return (
     <View style={{flex:1,justifyContent:'flex-end'}}>
+        <View
+        style={[StyleSheet.absoluteFillObject]}>
+            <Animated.Image
+            entering={FadeIn.duration(500)}
+            exiting={FadeIn.duration(500)}
+            key={`image-${activeIndex}`}
+            source={{uri:images[activeIndex]}}
+            style={{flex:1}}
+            />
+        </View>
         <Animated.FlatList
-        style={{flexGrow:0}}
-        contentContainerStyle={{paddingHorizontal:(width-_itemSize)/2,gap:_spacing,paddingBottom:100}} //starting position of the first item and gap between items
+        style={{flexGrow:0,height:_itemSize*2}}
+        contentContainerStyle={{paddingHorizontal:(width-_itemSize)/2,gap:_spacing}} //starting position of the first item and gap between items
          data={images} 
         keyExtractor={(_,index)=>String(index)} 
         renderItem={({item,index})=>{ //how each item renders
